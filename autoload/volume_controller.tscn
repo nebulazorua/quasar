@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://06d8iwwa27vn"]
+
+[ext_resource type="Script" uid="uid://cn0gqiphna5sa" path="res://autoload/volume_controller.gd" id="1_30fr2"]
+
+[node name="VolumeController" type="CanvasLayer"]
+layer = 128
+offset = Vector2(0, -80)
+transform = Transform2D(1, 0, 0, 1, 0, -80)
+script = ExtResource("1_30fr2")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+color = Color(0, 0, 0, 0.341176)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 599.0
+offset_top = 5.0
+offset_right = 685.0
+offset_bottom = 39.0
+theme_override_font_sizes/font_size = 24
+text = "volume"
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = 584.0
+offset_top = 42.0
+offset_right = 704.0
+offset_bottom = 69.0
+max_value = 1.0
+value = 1.0

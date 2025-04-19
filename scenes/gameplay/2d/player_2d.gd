@@ -45,6 +45,7 @@ func ghost_tap(column:int):
 func confirm(column: int):
 	receptors[column].play_anim("confirm");
 
+
 func display_judgement(index: int, note: NoteData):		
 
 	# TODO: dont hardcode this shit
@@ -72,7 +73,7 @@ func _process(dt:float):
 	
 	for note: Note2D in notes_node.get_children():
 
-		if auto_played and note.data.beat <= conductor.beat:
+		if auto_played and note.data.beat <= conductor.beat and not note.data.scored:
 			if is_instance_valid(hit_sound):
 				hit_sound.play(0);
 			score_note(note.data, 0);
@@ -80,6 +81,7 @@ func _process(dt:float):
 			
 		if note.data.beat < miss_beat and not note.data.scored and not note.data.missed:
 			note.data.missed = true;
+			misses += 1;
 			judgement.show_judge(5);
 		
 		var reverse_mod: float = -1 if downscroll else 1
@@ -99,3 +101,5 @@ func _process(dt:float):
 			
 				
 		note.position.x = receptors[note.data.column].position.x;
+	
+	$Label.text = 'misses: %d / accuracy: %.3f%%' % [misses, (hit_notes / note_data.length) * 100]

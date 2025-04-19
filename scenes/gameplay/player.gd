@@ -4,7 +4,6 @@ signal scored_note(data: NoteData);
 signal released_input(column: int);
 signal ghost_tapped(column:int);
 
-
 enum ScrollMethod {
 	CMOD = 0,
 	XMOD = 1,
@@ -24,6 +23,9 @@ enum ScrollMethod {
 @export var scroll_speed:float = 400; # What this should be depends on scroll method
 var note_data: NoteCollection
 var _last_spawned_row:int = 0;
+
+var hit_notes:float = 0;
+var misses:int = 0;
 
 
 #region Per-Dimension Implementations
@@ -46,19 +48,26 @@ func display_judgement(index: int, note: NoteData):
 	print_rich("[color=orange][b]WARNING:[b] Unimplemented 'display_judgement' function")
 	
 func score_note(note: NoteData, diff: float = (note.beat / conductor.bps) - conductor.time ):		
+	if note.scored:
+		return;
+		
 	var judged_diff: float = abs(diff) * 1000.0; # ENSURE it's absolute and also ms
 	note.scored = true;
 	# TODO: make this less hardcoded
 	var j_idx := 4;
 	
 	var judge_timings: Array[float] = [22.5, 45, 90, 135, 180];
+	var judge_scores: Array[float] = [1, 0.9, 0.67, 0.34, 0]
+	
 	for idx in range(0, judge_timings.size()):
 		if judged_diff <= judge_timings[idx]:
 			j_idx = idx;
 			break;
 	
+	hit_notes += judge_scores[j_idx];
 	display_judgement(j_idx, note);
 	scored_note.emit(note);
+	
 		
 	
 	

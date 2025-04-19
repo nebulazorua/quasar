@@ -13,8 +13,12 @@ func _init(columns:int = 4):
 	notes.resize(columns);
 	
 func add_note(data: NoteData):
+	if not notes[data.column].has(data.row):
+		length += 1;
+	
+	
 	notes[data.column].set(data.row, data);
-	length += 1;
+
 
 func get_notes_at_row(row: int):
 	var collected_notes: Array[NoteData] = [];

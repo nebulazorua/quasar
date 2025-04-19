@@ -490,3 +490,11 @@ libraries = {
 }
 
 [node name="notes" type="Node2D" parent="."]
+
+[node name="Label" type="Label" parent="."]
+offset_left = -33.0
+offset_top = 636.0
+offset_right = 38.0
+offset_bottom = 659.0
+text = "misses: 0"
+horizontal_alignment = 1

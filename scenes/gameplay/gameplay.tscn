@@ -35,10 +35,9 @@ func _process(delta: float) -> void:
 [node name="Gameplay" type="Node2D"]
 script = ExtResource("1_2p25t")
 
-[node name="player" parent="." node_paths=PackedStringArray("hit_sound", "conductor") instance=ExtResource("2_m3hu3")]
+[node name="player" parent="." node_paths=PackedStringArray("conductor") instance=ExtResource("2_m3hu3")]
 position = Vector2(980, 50)
 note_template = ExtResource("3_gh441")
-hit_sound = NodePath("")
 conductor = NodePath("../conductor")
 scroll_speed = 875.0
 
