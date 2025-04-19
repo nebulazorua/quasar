@@ -1,0 +1,188 @@
+[gd_scene load_steps=6 format=3 uid="uid://cp10wwskfbdoy"]
+
+[sub_resource type="GDScript" id="GDScript_36l1p"]
+script/source = "extends HSlider
+
+@onready var valabel: Label = get_node(\"value\");
+
+func _process(delta: float) -> void:
+	valabel.text = str(value)
+	UserSettings.set(self.name, value)
+"
+
+[sub_resource type="GDScript" id="GDScript_6wm04"]
+script/source = "extends HSlider
+
+@onready var valabel: Label = get_node(\"value\");
+
+func _process(delta: float) -> void:
+	if value == 0:
+		valabel.text = \"chart\"
+	else:
+		valabel.text = str(value)
+	
+	UserSettings.set(self.name, value)
+"
+
+[sub_resource type="GDScript" id="GDScript_5p8wc"]
+script/source = "extends ItemList
+
+
+func _ready() -> void:
+	select(0, true)
+	
+func _on_item_selected(index: int) -> void:
+	UserSettings.method = index;
+"
+
+[sub_resource type="GDScript" id="GDScript_f4mfi"]
+script/source = "extends CheckBox
+
+
+func _on_toggled(toggled_on: bool) -> void:
+	UserSettings.set(self.name, toggled_on)
+"
+
+[sub_resource type="GDScript" id="GDScript_r6d6q"]
+script/source = "extends Button
+
+
+
+func _on_button_down() -> void:
+	SceneLoader.switch_to(\"scenes/gameplay/gameplay.tscn\")
+"
+
+[node name="Settings" type="Node2D"]
+
+[node name="bg" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.215902, 0.215902, 0.215902, 1)
+
+[node name="cmod" type="HSlider" parent="."]
+offset_left = 176.0
+offset_top = 80.0
+offset_right = 376.0
+offset_bottom = 96.0
+max_value = 1000.0
+step = 25.0
+value = 500.0
+rounded = true
+script = SubResource("GDScript_36l1p")
+
+[node name="value" type="Label" parent="cmod"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 17.0
+offset_right = 125.0
+offset_bottom = 40.0
+text = "500"
+
+[node name="name" type="Label" parent="cmod"]
+layout_mode = 0
+offset_left = 77.0
+offset_top = -30.0
+offset_right = 120.0
+offset_bottom = -7.0
+text = "cmod"
+
+[node name="xmod" type="HSlider" parent="."]
+offset_left = 724.0
+offset_top = 80.0
+offset_right = 924.0
+offset_bottom = 96.0
+min_value = 0.5
+max_value = 10.0
+step = 0.5
+value = 1.0
+script = SubResource("GDScript_36l1p")
+
+[node name="value" type="Label" parent="xmod"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 17.0
+offset_right = 125.0
+offset_bottom = 40.0
+text = "1"
+
+[node name="name" type="Label" parent="xmod"]
+layout_mode = 0
+offset_left = 77.0
+offset_top = -30.0
+offset_right = 120.0
+offset_bottom = -7.0
+text = "xmod"
+
+[node name="speed" type="HSlider" parent="."]
+offset_left = 430.0
+offset_top = 80.0
+offset_right = 630.0
+offset_bottom = 96.0
+max_value = 10.0
+step = 0.1
+script = SubResource("GDScript_6wm04")
+
+[node name="value" type="Label" parent="speed"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 17.0
+offset_right = 125.0
+offset_bottom = 40.0
+text = "3.2"
+
+[node name="name" type="Label" parent="speed"]
+layout_mode = 0
+offset_left = 63.0
+offset_top = -30.0
+offset_right = 136.0
+offset_bottom = -7.0
+text = "fnf speed"
+
+[node name="speedtypename" type="Label" parent="."]
+offset_left = 55.0
+offset_top = 4.0
+offset_right = 128.0
+offset_bottom = 53.0
+text = "scroll
+method"
+
+[node name="ItemList" type="ItemList" parent="."]
+offset_left = 41.0
+offset_top = 56.0
+offset_right = 141.0
+offset_bottom = 256.0
+allow_search = false
+item_count = 3
+item_0/text = "SM CMod"
+item_1/text = "SM XMod"
+item_2/text = "FNF"
+script = SubResource("GDScript_5p8wc")
+
+[node name="reverse" type="CheckBox" parent="."]
+offset_left = 228.0
+offset_top = 212.0
+offset_right = 252.0
+offset_bottom = 236.0
+text = "downscroll"
+script = SubResource("GDScript_f4mfi")
+
+[node name="opp" type="CheckBox" parent="."]
+offset_left = 556.0
+offset_top = 222.0
+offset_right = 669.0
+offset_bottom = 253.0
+text = "opp mode"
+script = SubResource("GDScript_f4mfi")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 389.0
+offset_top = 329.0
+offset_right = 479.0
+offset_bottom = 360.0
+text = "goto game"
+script = SubResource("GDScript_r6d6q")
+
+[connection signal="item_selected" from="ItemList" to="ItemList" method="_on_item_selected"]
+[connection signal="toggled" from="reverse" to="reverse" method="_on_toggled"]
+[connection signal="toggled" from="opp" to="opp" method="_on_toggled"]
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]

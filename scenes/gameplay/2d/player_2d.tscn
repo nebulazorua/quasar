@@ -1,0 +1,492 @@
+[gd_scene load_steps=24 format=3 uid="uid://bqxmd2p1qtg0x"]
+
+[ext_resource type="Script" uid="uid://br16aynphsfow" path="res://scenes/gameplay/2d/player_2d.gd" id="1_bvhlv"]
+[ext_resource type="Script" uid="uid://bymw7fpablcop" path="res://scenes/gameplay/2d/receptor_2d.gd" id="3_4mai0"]
+[ext_resource type="Shader" uid="uid://cxwhnvxsljns6" path="res://resources/shaders/glow_shader.gdshader" id="5_p8sb4"]
+[ext_resource type="Texture2D" uid="uid://24rgbneu82wl" path="res://resources/gameplay/styles/funkin/glow1.png" id="6_m765y"]
+[ext_resource type="Texture2D" uid="uid://bjqag0v7yc25o" path="res://resources/gameplay/styles/funkin/glow2.png" id="6_p8sb4"]
+[ext_resource type="Shader" uid="uid://cfqbsnyhfe1s5" path="res://resources/shaders/receptor_shader.gdshader" id="7_p8sb4"]
+[ext_resource type="Texture2D" uid="uid://cxbjhrr6jylml" path="res://resources/gameplay/judgements.png" id="8_2pqe6"]
+[ext_resource type="SpriteFrames" uid="uid://bbgk1fs44vxfg" path="res://resources/gameplay/styles/funkin/receptoranimated.res" id="8_oyjo1"]
+[ext_resource type="Script" uid="uid://28vw8roiklo2" path="res://scenes/gameplay/2d/judgement.gd" id="9_2pqe6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p8sb4"]
+resource_local_to_scene = true
+shader = ExtResource("7_p8sb4")
+shader_parameter/enabled = false
+
+[sub_resource type="GDScript" id="GDScript_2pqe6"]
+script/source = "@tool
+extends AnimatedSprite2D
+
+func _ready():
+	animation_changed.connect(func():
+		var mat: ShaderMaterial = material;
+	
+		mat.set_shader_parameter(\"enabled\", animation == &\"press\")
+
+	)
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oyjo1"]
+resource_local_to_scene = true
+shader = ExtResource("5_p8sb4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2pqe6"]
+resource_local_to_scene = true
+shader = ExtResource("5_p8sb4")
+
+[sub_resource type="Animation" id="Animation_hrg0o"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("glow_1:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("glow_2:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("arrow:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("arrow:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("arrow:animation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("glow_1:self_modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("glow_2:self_modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_oyjo1"]
+resource_name = "confirm_2"
+length = 0.125004
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("glow_2:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("glow_1:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0001, 0.0833333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("arrow:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0416667, 0.125),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1.056, 1.056), Vector2(1.056, 1.056), Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("arrow:animation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1.03526),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("glow_1:self_modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5a0v7"]
+resource_name = "idle"
+length = 0.0333367
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("glow_1:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("glow_2:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("arrow:animation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("arrow:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_p8sb4"]
+resource_name = "tap"
+length = 0.125004
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("arrow:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("arrow:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"press"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("arrow:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("glow_1:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("glow_2:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m765y"]
+_data = {
+&"RESET": SubResource("Animation_hrg0o"),
+&"confirm": SubResource("Animation_oyjo1"),
+&"idle": SubResource("Animation_5a0v7"),
+&"tap": SubResource("Animation_p8sb4")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0h3er"]
+resource_local_to_scene = true
+shader = ExtResource("7_p8sb4")
+shader_parameter/enabled = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b5t2a"]
+resource_local_to_scene = true
+shader = ExtResource("7_p8sb4")
+shader_parameter/enabled = false
+
+[sub_resource type="GDScript" id="GDScript_oyjo1"]
+script/source = "@tool
+extends AnimatedSprite2D
+
+func _ready():
+	animation_changed.connect(func():
+		var mat: ShaderMaterial = material;
+	
+		mat.set_shader_parameter(\"enabled\", animation == &\"press\")
+
+	)
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ubsla"]
+resource_local_to_scene = true
+shader = ExtResource("7_p8sb4")
+shader_parameter/enabled = false
+
+[sub_resource type="GDScript" id="GDScript_p8sb4"]
+script/source = "@tool
+extends AnimatedSprite2D
+
+func _ready():
+	animation_changed.connect(func():
+		var mat: ShaderMaterial = material;
+	
+		mat.set_shader_parameter(\"enabled\", animation == &\"press\")
+
+	)
+"
+
+[node name="Player2D" type="Node2D"]
+script = ExtResource("1_bvhlv")
+
+[node name="judgement" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-1.52588e-05, 280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8_2pqe6")
+vframes = 6
+script = ExtResource("9_2pqe6")
+
+[node name="receptors" type="Node2D" parent="."]
+position = Vector2(0, 56)
+
+[node name="receptor_0" type="Node2D" parent="receptors"]
+modulate = Color(0.870588, 0.2, 0.682353, 1)
+position = Vector2(-174, 0)
+rotation = 1.5708
+scale = Vector2(0.7, 0.7)
+script = ExtResource("3_4mai0")
+
+[node name="arrow" type="AnimatedSprite2D" parent="receptors/receptor_0"]
+material = SubResource("ShaderMaterial_p8sb4")
+sprite_frames = ExtResource("8_oyjo1")
+animation = &"idle"
+script = SubResource("GDScript_2pqe6")
+
+[node name="glow_1" type="Sprite2D" parent="receptors/receptor_0"]
+visible = false
+material = SubResource("ShaderMaterial_oyjo1")
+position = Vector2(0.928955, -2.49999)
+texture = ExtResource("6_m765y")
+
+[node name="glow_2" type="Sprite2D" parent="receptors/receptor_0"]
+visible = false
+material = SubResource("ShaderMaterial_2pqe6")
+position = Vector2(-1.92817, 0.357221)
+texture = ExtResource("6_p8sb4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="receptors/receptor_0"]
+libraries = {
+&"": SubResource("AnimationLibrary_m765y")
+}
+
+[node name="receptor_1" type="Node2D" parent="receptors"]
+modulate = Color(0, 1, 1, 1)
+position = Vector2(-58, 0)
+scale = Vector2(0.7, 0.7)
+script = ExtResource("3_4mai0")
+column = 1
+
+[node name="arrow" type="AnimatedSprite2D" parent="receptors/receptor_1"]
+material = SubResource("ShaderMaterial_0h3er")
+sprite_frames = ExtResource("8_oyjo1")
+animation = &"idle"
+script = SubResource("GDScript_2pqe6")
+
+[node name="glow_1" type="Sprite2D" parent="receptors/receptor_1"]
+visible = false
+material = SubResource("ShaderMaterial_oyjo1")
+position = Vector2(0.928955, -2.49999)
+texture = ExtResource("6_m765y")
+
+[node name="glow_2" type="Sprite2D" parent="receptors/receptor_1"]
+visible = false
+material = SubResource("ShaderMaterial_2pqe6")
+position = Vector2(-1.92817, 0.357221)
+texture = ExtResource("6_p8sb4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="receptors/receptor_1"]
+libraries = {
+&"": SubResource("AnimationLibrary_m765y")
+}
+
+[node name="receptor_2" type="Node2D" parent="receptors"]
+modulate = Color(0.0705882, 0.980392, 0.0196078, 1)
+position = Vector2(58, 0)
+rotation = 3.14159
+scale = Vector2(0.7, 0.7)
+script = ExtResource("3_4mai0")
+column = 2
+
+[node name="arrow" type="AnimatedSprite2D" parent="receptors/receptor_2"]
+material = SubResource("ShaderMaterial_b5t2a")
+sprite_frames = ExtResource("8_oyjo1")
+animation = &"idle"
+script = SubResource("GDScript_oyjo1")
+
+[node name="glow_1" type="Sprite2D" parent="receptors/receptor_2"]
+visible = false
+material = SubResource("ShaderMaterial_oyjo1")
+position = Vector2(-0.928955, 2.49999)
+texture = ExtResource("6_m765y")
+
+[node name="glow_2" type="Sprite2D" parent="receptors/receptor_2"]
+visible = false
+material = SubResource("ShaderMaterial_2pqe6")
+position = Vector2(-3.78608, 5.3572)
+texture = ExtResource("6_p8sb4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="receptors/receptor_2"]
+libraries = {
+&"": SubResource("AnimationLibrary_m765y")
+}
+
+[node name="receptor_3" type="Node2D" parent="receptors"]
+modulate = Color(0.976471, 0.223529, 0.247059, 1)
+position = Vector2(174, 0)
+rotation = -1.5708
+scale = Vector2(0.7, 0.7)
+script = ExtResource("3_4mai0")
+column = 3
+
+[node name="arrow" type="AnimatedSprite2D" parent="receptors/receptor_3"]
+material = SubResource("ShaderMaterial_ubsla")
+sprite_frames = ExtResource("8_oyjo1")
+animation = &"idle"
+script = SubResource("GDScript_p8sb4")
+
+[node name="glow_1" type="Sprite2D" parent="receptors/receptor_3"]
+visible = false
+material = SubResource("ShaderMaterial_oyjo1")
+texture = ExtResource("6_m765y")
+
+[node name="glow_2" type="Sprite2D" parent="receptors/receptor_3"]
+visible = false
+material = SubResource("ShaderMaterial_2pqe6")
+position = Vector2(-0.357141, 3.78616)
+texture = ExtResource("6_p8sb4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="receptors/receptor_3"]
+libraries = {
+&"": SubResource("AnimationLibrary_m765y")
+}
+
+[node name="notes" type="Node2D" parent="."]

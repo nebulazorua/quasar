@@ -1,0 +1,74 @@
+[gd_scene load_steps=10 format=3 uid="uid://kprytmqferqo"]
+
+[ext_resource type="Script" uid="uid://7netnm1v0r3o" path="res://scenes/gameplay/gameplay.gd" id="1_2p25t"]
+[ext_resource type="Script" uid="uid://w2sq4a7tlvrs" path="res://scripts/Conductor.gd" id="1_elxb5"]
+[ext_resource type="PackedScene" uid="uid://bqxmd2p1qtg0x" path="res://scenes/gameplay/2d/player_2d.tscn" id="2_m3hu3"]
+[ext_resource type="AudioStream" uid="uid://j8p8i5no6tcg" path="res://resources/sfx/tick.ogg" id="2_x0t60"]
+[ext_resource type="PackedScene" uid="uid://cg58gyri3r7gd" path="res://resources/gameplay/styles/funkin/note.tscn" id="3_gh441"]
+[ext_resource type="AudioStream" uid="uid://baw12ehfjq1td" path="res://resources/gameplay/songs/sporting/Inst.ogg" id="5_pa1on"]
+[ext_resource type="AudioStream" uid="uid://b72ih3kellxrc" path="res://resources/gameplay/songs/sporting/Voices.ogg" id="6_elju3"]
+
+[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_pa1on"]
+stream_count = 2
+stream_0/stream = ExtResource("5_pa1on")
+stream_0/volume = 0.0
+stream_1/stream = ExtResource("6_elju3")
+stream_1/volume = 0.0
+
+[sub_resource type="GDScript" id="GDScript_gh441"]
+script/source = "extends Label
+
+@onready var conductor: Conductor = get_parent().get_parent().get_node(\"conductor\")
+@onready var player: Player2D = get_parent().get_parent().get_node(\"player\")
+@onready var opponent: Player2D = get_parent().get_parent().get_node(\"opponent\")
+
+func _process(delta: float) -> void:
+	text = \"FPS: %d\" % [Performance.get_monitor(Performance.TIME_FPS)];
+	#text += \"\\nBeat: %.2f\" % [conductor.beat]
+	#text += \"\\nRow: %d\" % [conductor.beat * NoteCollection.ROWS_PER_BEAT]
+	#text += \"\\nSpawned Player Notes: %d\" % [player.notes_node.get_child_count()]
+	#text += \"\\nSpawned Opponent Notes: %d\" % [opponent.notes_node.get_child_count()]
+	#text += \"\\nPlayer Note Count: %d\" % [player.note_data.length]
+	#text += \"\\nOpponent Note Count: %d\" % [opponent.note_data.length]
+"
+
+[node name="Gameplay" type="Node2D"]
+script = ExtResource("1_2p25t")
+
+[node name="player" parent="." node_paths=PackedStringArray("hit_sound", "conductor") instance=ExtResource("2_m3hu3")]
+position = Vector2(980, 50)
+note_template = ExtResource("3_gh441")
+hit_sound = NodePath("")
+conductor = NodePath("../conductor")
+scroll_speed = 875.0
+
+[node name="opponent" parent="." node_paths=PackedStringArray("conductor") instance=ExtResource("2_m3hu3")]
+position = Vector2(320, 50)
+note_template = ExtResource("3_gh441")
+auto_played = true
+conductor = NodePath("../conductor")
+scroll_method = 2
+scroll_speed = 3.1
+
+[node name="music" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamSynchronized_pa1on")
+bus = &"Music"
+
+[node name="conductor" type="Node" parent="." node_paths=PackedStringArray("linked_audio_stream")]
+script = ExtResource("1_elxb5")
+linked_audio_stream = NodePath("../music")
+tempo = 300.0
+metadata/_custom_type_script = "uid://w2sq4a7tlvrs"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="conductor"]
+stream = ExtResource("2_x0t60")
+bus = &"SFX"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "penis
+"
+script = SubResource("GDScript_gh441")
