@@ -1,1 +1,1 @@
-"Quasar FNF Godot Wowie" 
+Quasar FNF Godot Wowie
