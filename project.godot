@@ -28,6 +28,11 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/vsync/vsync_mode=0
 
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/fancy_editor_sounds/plugin.cfg")
