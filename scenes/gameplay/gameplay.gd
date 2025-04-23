@@ -2,36 +2,21 @@ class_name Gameplay extends Node2D
 
 @onready var conductor: Conductor = $conductor;
 @onready var music: AudioStreamPlayer = $music;
+@export var song_name: String = "boxing-match";
 
 func _ready():
 	# TODO: make an actual chart class
 	
-	var json_data: Dictionary = load("res://resources/gameplay/songs/sporting/sporting-hard.json").data.song
-	conductor.tempo = json_data.bpm;
-	var player_notes = NoteCollection.new(4);
-	var opponent_notes = NoteCollection.new(4);
-	for section_data in json_data.notes:
-		var section_notes: Array[Variant] = section_data.sectionNotes;
-		for note in section_notes:
-			var time:float = note[0] / 1000.0;
-			var column_id:int = note[1];
-			var hold_length: float = note[2] / 1000.0;
-			if column_id < 0:
-				continue; # thanks psych engine
-				
-			var gotta_hit = section_data.mustHitSection;
-			if (column_id % 8 > 3):
-				gotta_hit = !gotta_hit;
-			
-			if gotta_hit:
-				player_notes.add_note(
-					NoteData.new(time * conductor.bps, fmod(column_id, 4))
-				)
-			else:
-				opponent_notes.add_note(
-					NoteData.new(time * conductor.bps, fmod(column_id, 4))
-				)
-				
+	var chart = Chart.new().parse_legacy_chart("res://resources/gameplay/songs/%s/%s.json" % [song_name, song_name]);
+	conductor.tempo = chart.tempo;
+	
+	# TODO: some metadata shit to get inst and vox etc lol
+	var stream: AudioStreamSynchronized = AudioStreamSynchronized.new();
+	stream.set_sync_stream(0, load("res://resources/gameplay/songs/%s/Inst.ogg" % song_name));
+	stream.set_sync_stream(1, load("res://resources/gameplay/songs/%s/Voices.ogg" % song_name));
+	stream.stream_count += 2;
+	music.stream = stream;
+	
 	var player := $player;
 	var opponent := $opponent;
 	
@@ -47,20 +32,20 @@ func _ready():
 			player.scroll_speed = UserSettings.xmod
 		Player.ScrollMethod.FNF:
 			if UserSettings.speed == 0.0:
-				player.scroll_speed = json_data.speed;
+				player.scroll_speed = chart.raw_data.speed;
 			else:
 				player.scroll_speed = UserSettings.speed
 	
-	player.auto_played = false;
+	player.auto_played = true;
 	opponent.auto_played = true;
 	
 	player.downscroll = UserSettings.reverse
 			
 	opponent.scroll_method = Player.ScrollMethod.FNF
-	opponent.scroll_speed = json_data.speed;
+	opponent.scroll_speed = chart.raw_data.speed;
 	
-	$player.note_data = player_notes;
-	$opponent.note_data = opponent_notes;
+	$opponent.note_data = chart.player_notes[0];
+	$player.note_data = chart.player_notes[1];
 	
 	conductor.update_time(-5 / conductor.bps);
 	conductor.playing = true;

@@ -28,13 +28,10 @@ func set_downscroll(v):
 	if v:
 		receptors_node.global_position.y = 720 - receptors_node.global_position.y;
 
-
-
 func spawn_note(data: NoteData):
 	var note: Note2D = note_template.instantiate();
 	note.data = data;
 	notes_node.add_child(note);
-
 
 func release(column:int):
 	receptors[column].play_anim("idle")
@@ -64,6 +61,21 @@ func display_judgement(index: int, note: NoteData):
 	
 	return index;
 		
+func get_y_pos(beat:float ):
+	var reverse_mod: float = -1 if downscroll else 1
+	match scroll_method:
+		ScrollMethod.CMOD:
+			var time:float = beat / conductor.bps;
+			var bps:float = (scroll_speed * 1.515) / 60.0;
+			return (time - conductor.visual_time) * bps * spacing * reverse_mod
+		ScrollMethod.XMOD:
+			return (beat - conductor.visual_beat) * spacing * scroll_speed * reverse_mod
+		ScrollMethod.FNF:
+			var time:float = beat / conductor.bps;
+			return (time - conductor.visual_time) * 450 * scroll_speed * reverse_mod
+			
+	return 0.0;
+	
 func _process(dt:float):
 	super._process(dt);
 	
@@ -72,34 +84,53 @@ func _process(dt:float):
 	# TODO: Make this rely on note data and move it into the global Player class instead
 	
 	for note: Note2D in notes_node.get_children():
-
-		if auto_played and note.data.beat <= conductor.beat and not note.data.scored:
+		var data: NoteData = note.data;
+		
+		if auto_played and data.beat <= conductor.beat and not data.scored:
 			if is_instance_valid(hit_sound):
 				hit_sound.play(0);
-			score_note(note.data, 0);
-			receptors[note.data.column].bot_glow()
+			score_note(data, 0);
+			receptors[data.column].bot_glow()
 			
-		if note.data.beat < miss_beat and not note.data.scored and not note.data.missed:
-			note.data.missed = true;
+		if data.beat < miss_beat and not data.scored and not data.missed:
+			data.missed = true;
 			misses += 1;
 			judgement.show_judge(5);
 		
-		var reverse_mod: float = -1 if downscroll else 1
+		var target_y:float = receptors[data.column].global_position.y;
 		
-		note.global_position.y = receptors[note.data.column].global_position.y;
+		var note_y:float = target_y + get_y_pos(data.beat);
 		
-		match scroll_method:
-			ScrollMethod.CMOD:
-				var time:float = note.data.beat / conductor.bps;
-				var bps:float = (scroll_speed * 1.515) / 60.0;
-				note.position.y += (time - conductor.visual_time) * bps * spacing * reverse_mod
-			ScrollMethod.XMOD:
-				note.position.y += (note.data.beat - conductor.visual_beat) * spacing * scroll_speed * reverse_mod
-			ScrollMethod.FNF:
-				var time:float = note.data.beat / conductor.bps;
-				note.position.y += (time - conductor.visual_time) * 450 * scroll_speed * reverse_mod
+		note.global_position.y = note_y;
+		
+		if note.data.length > 0:
+			var start_pos := note_y;
+			var end_beat := data.beat + data.length;
+			var end_pos: float = target_y + get_y_pos(end_beat);
 			
+			if data.scored and data.hold_time < data.length:
+				start_pos = target_y;
 				
-		note.position.x = receptors[note.data.column].position.x;
+				var last_hit_steps = ceil(data.hold_time * 4);
+				data.hold_time = conductor.beat - data.beat;
+				
+				if auto_played or Input.is_action_pressed("column_%s" % data.column):
+					data.drop_progress = 1.0;
+				else:
+					data.drop_progress -= dt / 0.1;
+					
+				if last_hit_steps < ceil(data.hold_time * 4):
+					if auto_played:
+						receptors[data.column].bot_glow()
+					elif Input.is_action_pressed("column_%s" % data.column):
+						confirm(data.column)
+					
+				if data.drop_progress <= 0:
+					data.missed = true;
+				
+			note.change_hold(start_pos, end_pos)
+
+
+		note.position.x = receptors[data.column].position.x;
 	
 	$Label.text = 'misses: %d / accuracy: %.3f%%' % [misses, (hit_notes / note_data.length) * 100]

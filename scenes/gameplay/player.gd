@@ -53,6 +53,9 @@ func score_note(note: NoteData, diff: float = (note.beat / conductor.bps) - cond
 		
 	var judged_diff: float = abs(diff) * 1000.0; # ENSURE it's absolute and also ms
 	note.scored = true;
+	if note.length > 0:
+		note.drop_progress = 1;
+		
 	# TODO: make this less hardcoded
 	var j_idx := 4;
 	

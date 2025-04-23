@@ -9,19 +9,34 @@ const DIRECTIONS = [
 
 var data: NoteData
 
+@onready var arrow:AnimatedSprite2D = get_node("arrow")
+@onready var hold: Line2D = get_node("hold")
+
+func change_hold(start_y: float, end_y: float):
+	hold.start_y = start_y;
+	hold.end_y = end_y;
 	
 func _process(delta: float):
-	if not is_instance_valid(data) or data.scored:
+	if not is_instance_valid(data):
+		visible = false;
+		queue_free();
+		return;
+		
+	arrow.visible = not data.scored;
+	
+	if data.scored and (data.length <= 0 or data.hold_time >= data.length):
+		visible = false;
 		queue_free();
 		return;
 		
 	if data.missed:
-		modulate = Color(1, 1, 1).darkened(0.5)
+		modulate = Color(0.5, 0.5, 0.5);
 		if position.y < -160 or position.y > 880:
+			visible = false;
 			queue_free();
 			return;
 	else:
 		modulate = Color(1, 1, 1);
 		
-			
-	get_node("arrow").animation = DIRECTIONS[fmod(data.column, DIRECTIONS.size())] + " note"
+	hold.visible = data.length > 0
+	arrow.animation = DIRECTIONS[fmod(data.column, DIRECTIONS.size())] + " note"

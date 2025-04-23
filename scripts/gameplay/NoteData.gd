@@ -8,6 +8,10 @@ var beat: float = 0.0;
 var column: int = 0;
 var length: float = 0.0;
 
+# hold data
+var drop_progress: float = 0.0;
+var hold_time:float = 0.0;
+
 var row: int = 0 :
 	get:
 		return beat * NoteCollection.ROWS_PER_BEAT

@@ -1,12 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://cg58gyri3r7gd"]
+[gd_scene load_steps=6 format=3 uid="uid://cg58gyri3r7gd"]
 
 [ext_resource type="SpriteFrames" uid="uid://k2s13e8q40dn" path="res://resources/gameplay/styles/funkin/notes.res" id="1_3uqot"]
 [ext_resource type="Script" uid="uid://bpnmgjafx6xp8" path="res://scenes/gameplay/2d/note2d.gd" id="1_slad8"]
+[ext_resource type="Texture2D" uid="uid://cfxs6huyyfpd7" path="res://resources/gameplay/styles/funkin/hold.png" id="2_8em6u"]
+[ext_resource type="Script" uid="uid://dcqdhe6i73u41" path="res://resources/gameplay/styles/funkin/hold.gd" id="2_wqv8b"]
+[ext_resource type="Texture2D" uid="uid://bdibcnuxyymmy" path="res://resources/gameplay/styles/funkin/cap.png" id="4_imfwf"]
 
 [node name="note" type="Node2D"]
 script = ExtResource("1_slad8")
 
+[node name="hold" type="Line2D" parent="."]
+scale = Vector2(0.7, 0.7)
+points = PackedVector2Array(0, 0, 0, 142.857)
+width = 50.0
+texture = ExtResource("2_8em6u")
+texture_mode = 1
+script = ExtResource("2_wqv8b")
+end_y = 100.0
+
+[node name="cap" type="Sprite2D" parent="hold"]
+position = Vector2(0, 174.857)
+rotation = 1.5708
+texture = ExtResource("4_imfwf")
+
 [node name="arrow" type="AnimatedSprite2D" parent="."]
+z_index = 1
 scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("1_3uqot")
 animation = &"left note"

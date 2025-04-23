@@ -366,6 +366,7 @@ vframes = 6
 script = ExtResource("9_2pqe6")
 
 [node name="receptors" type="Node2D" parent="."]
+z_index = 1
 position = Vector2(0, 56)
 
 [node name="receptor_0" type="Node2D" parent="receptors"]
