@@ -1,9 +1,12 @@
 class_name Player extends Node
 
+# TODO: rewrite in C#
+
 signal scored_note(data: NoteData);
+signal missed_note(data: NoteData);
+
 signal released_input(column: int);
 signal ghost_tapped(column:int);
-
 enum ScrollMethod {
 	CMOD = 0,
 	XMOD = 1,
@@ -82,8 +85,6 @@ func get_note_spawn_beat():
 	# Can likely do some dumb math to figure out the current latest row, convert to beat then like +0.25 or something
 
 func _check_spawns():
-	# TODO: some sorta get_spawn_beat func and take into acc scrollspeed etc
-	
 	var spawn_beat: float = get_note_spawn_beat();
 	var spawn_row:int = spawn_beat * NoteCollection.ROWS_PER_BEAT;
 	
@@ -142,7 +143,62 @@ func _unhandled_input(event: InputEvent) -> void:
 					#receptors[column].play_anim("idle")	
 				break;
 				
+
+var hold_index:int = 0;
+var last_miss_check:int = 0;
+var last_autoplay_row:int = 0;
 func _process(dt:float):
 	_check_spawns();
+	var miss_beat := (conductor.time - 0.18) * conductor.bps;
+	var row:int = conductor.beat * NoteCollection.ROWS_PER_BEAT;
+	# Autoplay
+	if auto_played and row > last_autoplay_row:
+		var notes: Array[NoteData] = note_data.get_notes_between(last_autoplay_row, row)
+		for data in notes:
+			if not data.scored:
+				if is_instance_valid(hit_sound):
+					hit_sound.play(0);
+				score_note(data, 0);
+				confirm(data.column);
 	
+	last_autoplay_row = row;
+	
+	# Update Misses
+			
+	for miss_row in range(last_miss_check - 48, row): # doing it based on last_miss_check because lag spikes etc
+		for n in note_data.notes:
+			var data = n.get(miss_row, null);
+			if data != null and data.beat <= miss_beat and not data.scored and not data.missed:
+				data.missed = true;
+				misses += 1;
+				missed_note.emit(data)
+				
+	# TODO: Update holds
+	
+			#if note.data.length > 0:
+			#var start_pos := note_y;
+			#var end_beat := data.beat + data.length;
+			#var end_pos: float = target_y + get_y_pos(end_beat);
+			#
+			#if data.scored and data.hold_time < data.length:
+				#start_pos = target_y;
+				#
+				#var last_hit_steps = ceil(data.hold_time * 4);
+				#data.hold_time = conductor.beat - data.beat;
+				#
+				#if auto_played or Input.is_action_pressed("column_%s" % data.column):
+					#data.drop_progress = 1.0;
+				#else:
+					#data.drop_progress -= dt / 0.1;
+					#
+				#if last_hit_steps < ceil(data.hold_time * 4):
+					#if auto_played:
+						#receptors[data.column].bot_glow()
+					#elif Input.is_action_pressed("column_%s" % data.column):
+						#confirm(data.column)
+					#
+				#if data.drop_progress <= 0:
+					#data.missed = true;
+	last_miss_check = row;
+		
 #endregion

@@ -22,7 +22,12 @@ func _ready():
 	
 	for receptor: Receptor2D in receptors_node.get_children():
 		receptors[receptor.column] = receptor;
+		
+	missed_note.connect(_miss_note)
 
+func _miss_note(data: NoteData):
+	display_judgement(5, data)
+	
 func set_downscroll(v):
 	receptors_node.position.y = 56;
 	if v:
@@ -40,23 +45,26 @@ func ghost_tap(column:int):
 	receptors[column].play_anim("tap")
 	
 func confirm(column: int):
-	receptors[column].play_anim("confirm");
+	if auto_played:
+		receptors[column].bot_glow()
+	else:
+		receptors[column].play_anim("confirm");
 
 
 func display_judgement(index: int, note: NoteData):		
 
 	# TODO: dont hardcode this shit
 	
-	var colours: Array[Color] = [
-		Color("a215ba"),
-		Color("00ffff"),
-		Color("12fa05"),
-		Color("e26823"),
-		Color("ff0000")
-	];
-	var judge_colour := colours[index];
-		
-	receptors[note.column].modulate = judge_colour
+	#var colours: Array[Color] = [
+		#Color("a215ba"),
+		#Color("00ffff"),
+		#Color("12fa05"),
+		#Color("e26823"),
+		#Color("ff0000")
+	#];
+	#var judge_colour := colours[index];
+		#
+	#receptors[note.column].modulate = judge_colour
 	judgement.show_judge(index);
 	
 	return index;
@@ -75,60 +83,22 @@ func get_y_pos(beat:float ):
 			return (time - conductor.visual_time) * 450 * scroll_speed * reverse_mod
 			
 	return 0.0;
-	
+
+
 func _process(dt:float):
-	super._process(dt);
-	
-	var miss_beat := (conductor.time - 0.18) * conductor.bps;
-	
-	# TODO: Make this rely on note data and move it into the global Player class instead
-	
+	super._process(dt);		
+			
+	# Note visuals TODO move to NoteField
 	for note: Note2D in notes_node.get_children():
 		var data: NoteData = note.data;
-		
-		if auto_played and data.beat <= conductor.beat and not data.scored:
-			if is_instance_valid(hit_sound):
-				hit_sound.play(0);
-			score_note(data, 0);
-			receptors[data.column].bot_glow()
-			
-		if data.beat < miss_beat and not data.scored and not data.missed:
-			data.missed = true;
-			misses += 1;
-			judgement.show_judge(5);
-		
 		var target_y:float = receptors[data.column].global_position.y;
-		
 		var note_y:float = target_y + get_y_pos(data.beat);
 		
 		note.global_position.y = note_y;
 		
 		if note.data.length > 0:
-			var start_pos := note_y;
-			var end_beat := data.beat + data.length;
-			var end_pos: float = target_y + get_y_pos(end_beat);
+			note.change_hold(note_y, target_y + get_y_pos(data.beat + data.length))
 			
-			if data.scored and data.hold_time < data.length:
-				start_pos = target_y;
-				
-				var last_hit_steps = ceil(data.hold_time * 4);
-				data.hold_time = conductor.beat - data.beat;
-				
-				if auto_played or Input.is_action_pressed("column_%s" % data.column):
-					data.drop_progress = 1.0;
-				else:
-					data.drop_progress -= dt / 0.1;
-					
-				if last_hit_steps < ceil(data.hold_time * 4):
-					if auto_played:
-						receptors[data.column].bot_glow()
-					elif Input.is_action_pressed("column_%s" % data.column):
-						confirm(data.column)
-					
-				if data.drop_progress <= 0:
-					data.missed = true;
-				
-			note.change_hold(start_pos, end_pos)
 
 
 		note.position.x = receptors[data.column].position.x;

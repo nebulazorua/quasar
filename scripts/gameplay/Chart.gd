@@ -21,7 +21,7 @@ func parse_legacy_chart(chart_path:String):
 			var time:float = note[0] / 1000.0;
 			var column_id:int = note[1];
 			var hold_length_sex: float = note[2] / 1000.0;
-			var hold_length_bts: float = hold_length_sex * bps;
+			var hold_length_bts: float = 0; #hold_length_sex * bps;
 			
 			if column_id < 0:
 				continue; # thanks psych engine

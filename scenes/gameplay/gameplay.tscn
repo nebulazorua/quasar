@@ -32,7 +32,6 @@ script = ExtResource("1_2p25t")
 z_index = 1
 position = Vector2(980, 50)
 note_template = ExtResource("3_gh441")
-auto_played = true
 conductor = NodePath("../conductor")
 scroll_speed = 875.0
 

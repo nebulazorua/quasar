@@ -23,8 +23,10 @@ func _process(_d: float):
 		return;
 		
 	global_position.y = start_y;
-	var local_pos = to_local(Vector2(global_position.x, end_y));
-	
+	var local_pos = to_local(Vector2(global_position.x, end_y - (cap.texture.get_width() * 0.5)));
+	if local_pos.y < 0.0:
+		local_pos.y = 0.0;
+		
 	if last_local_pos == null or last_local_pos.x != local_pos.x or last_local_pos.y != local_pos.y:
 		set_point_position(1, local_pos)
 		update_cap();

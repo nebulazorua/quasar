@@ -24,7 +24,8 @@ func _process(delta: float):
 		
 	arrow.visible = not data.scored;
 	
-	if data.scored and (data.length <= 0 or data.hold_time >= data.length):
+	#if data.scored and (data.length <= 0 or data.hold_time >= data.length):
+	if data.scored:
 		visible = false;
 		queue_free();
 		return;

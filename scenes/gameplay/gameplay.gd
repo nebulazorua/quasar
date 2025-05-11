@@ -2,11 +2,9 @@ class_name Gameplay extends Node2D
 
 @onready var conductor: Conductor = $conductor;
 @onready var music: AudioStreamPlayer = $music;
-@export var song_name: String = "boxing-match";
+@export var song_name: String = "sporting";
 
-func _ready():
-	# TODO: make an actual chart class
-	
+func _ready():	
 	var chart = Chart.new().parse_legacy_chart("res://resources/gameplay/songs/%s/%s.json" % [song_name, song_name]);
 	conductor.tempo = chart.tempo;
 	
@@ -36,7 +34,7 @@ func _ready():
 			else:
 				player.scroll_speed = UserSettings.speed
 	
-	player.auto_played = true;
+	player.auto_played = false;
 	opponent.auto_played = true;
 	
 	player.downscroll = UserSettings.reverse
