@@ -13,6 +13,7 @@ config_version=5
 config/name="Quasar Framework"
 run/main_scene="uid://cp10wwskfbdoy"
 config/features=PackedStringArray("4.4")
+run/max_fps=120
 config/icon="res://icon.svg"
 
 [autoload]
@@ -26,7 +27,13 @@ VolumeController="*res://autoload/volume_controller.tscn"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/vsync/vsync_mode=0
+window/size/sharp_corners=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_height"
+
+[dotnet]
+
+project/assembly_name="Quasar Framework"
 
 [editor]
 
@@ -71,4 +78,5 @@ column_3={
 
 [rendering]
 
+rendering_device/vsync/frame_queue_size=3
 environment/defaults/default_clear_color=Color(0.4, 0.4, 0.4, 1)
